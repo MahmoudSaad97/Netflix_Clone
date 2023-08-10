@@ -95,7 +95,7 @@
                                                                     <a asp-action="Edit" asp-route-id="@item.MovieID">
                                                                         <button class="btn btn-outline-primary"> <i class="bi bi-pencil"></i> Edit</button>
                                                                     </a>
-                                                                    <a class="btn btn-outline-danger js-delete" data-id="@item.MovieID" onclick="Delete()">
+                                                                    <a class="btn btn-outline-danger js-delete" data-id="@item.MovieID" onclick="Delete(event)">
                                                                         <i class="bi bi-trash"></i>
                                                                         Delete
                                                                     </a>
@@ -125,9 +125,9 @@
     <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
     <script>
-            function Delete () {
+            function Delete (e) {
                 console.log("delete")
-                var btn = $(this);
+                var btn = e.target;
                 console.log(btn);
                 bootbox.confirm({
                     message: "Are you sure that you need to delete this movie?",
@@ -146,11 +146,10 @@
                     callback: function (result) {
                         if (result) {
                             $.ajax({
-                                url: '/movie/delete/' + btn.data('id'),
+                                url: '/movie/delete/' + btn.dataset.id,
                                 success: function () {
-                                    var movieContainer = btn.parents('.col-12');
-                                    movieContainer.addClass('animate__animated animate__zoomOut');
-
+                                   let movieContainer = btn.closest('.col-12');
+                                movieContainer.classList.add('animate__animated', 'animate__zoomOut');
                                     setTimeout(function () {
                                         movieContainer.remove();
                                     }, 500);
