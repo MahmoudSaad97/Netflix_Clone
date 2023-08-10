@@ -1,0 +1,65 @@
+﻿@page
+@model MovieApp.Areas.Identity.Pages.Account.Manage.PaymentLogsModel
+@{
+    ViewData["Title"] = "Payment Logs";
+    ViewData["ActivePage"] = ManageNavPages.PaymentLogs;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="tab-pane">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center nowrap" id="paymentsTable">
+            <thead>
+                <tr>
+                    <th>
+                        Payment Method
+                    </th>
+                    <th>
+                        CreditCard Number
+                    </th>
+                    <th>
+                        Payment Date
+                    </th>
+                    <th>
+                        Subscription
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.userPayments)
+                {
+                    <tr>
+                        <td>
+                            @item.PaymentMethod
+                        </td>
+                        <td>
+                            XXXX-XXXX-XXXX-@item.CreditNumber.Substring(Math.Max(0, @item.CreditNumber.Length - 4))
+                        </td>
+                        <td>
+                            @item.PaymentDate
+                        </td>
+                        <td>
+                            @item.Subscribe.Role.Name - @item.Subscribe.Price$
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Css{
+    <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        let table = $("#paymentsTable").DataTable({ scrollX: true });
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            table.columns.adjust().recalc();
+        });
+    </script>
+}

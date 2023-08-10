@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="A project made with love for ITI. <3">
+    <meta name="author" content="MH Community">
+    <title>MH - AdminPanel</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="~/css/main.css" rel="stylesheet" />
+    @await RenderSectionAsync("Css", required: false)
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-action="Index">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Admin Panel</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="AdminPanel" asp-action="Index">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <div class="sidebar-heading">
+                Users - Panel
+            </div>
+
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="User" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Users</span>
+                </a>
+            </li>
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Roles" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Roles</span>
+                </a>
+            </li>
+
+            <div class="sidebar-heading">
+                Payments - Panel
+            </div>
+
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Subscribes" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Subscribes</span>
+                </a>
+            </li>
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Payments" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Payments</span>
+                </a>
+            </li>
+
+            <div class="sidebar-heading">
+                Videos - Panel
+            </div>
+
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Movie" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Movies</span>
+                </a>
+            </li>
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Series" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Series</span>
+                </a>
+            </li>
+
+            <div class="sidebar-heading">
+                EXTRA
+            </div>
+
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Actors" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Actors</span>
+                </a>
+            </li>
+            <li class="nav-item mynav">
+                <a class="nav-link" asp-controller="Genries" asp-action="Index">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>All Genries</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <h2>MovieApp</h2>
+                    <div class="d-none d-md-inline-block mr-auto ml-md-3 my-2 my-md-0 mw-100">
+                        <h2> - Dashboard</h2>
+                    </div>
+
+                    <li class="nav-item" style="list-style-type: none;">
+                        <div class="dropdown mx-2">
+                            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @ViewBag.loggedUserFullName
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" asp-controller="Profile" asp-action="Index">
+                                    <i class="bi bi-arrow-left-circle-fill" style="color: dimgrey;"></i>&nbsp;&nbsp; Back to website
+                                </a>
+                                <hr style="color: black; width:90%; margin: 0px auto;">
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                    <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right" style="color: grey;"></i>&nbsp;&nbsp; Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                </nav>
+
+                <div class="container-fluid h-75">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Mohamed Hamdi 2023 - ITI</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll(".mynav").forEach((element) => {
+            element.querySelectorAll(".nav-link").forEach((link) =>{
+                if (link.href === window.location.href) {
+                    element.classList.add("active");
+                    element.setAttribute("aria-current", "page");
+                }
+                else{
+                    element.classList.remove("active");
+                }
+            });
+        });
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+    <script src="~/js/sb-admin-2.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
+</body>
+
+</html>

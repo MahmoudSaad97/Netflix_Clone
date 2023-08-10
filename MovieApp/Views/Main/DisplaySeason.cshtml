@@ -1,0 +1,33 @@
+﻿@model DisplayMoviesViewModel;
+@{
+
+}
+
+<div class="container my-5">
+    <h3 class="my-4">@Model.Season.SeasonName</h3>
+    @if(@Model.Season.Episodes != null && @Model.Season.Episodes.Any()){
+    <div class="row text-light">
+        @foreach (var item in Model.Season.Episodes)
+        {
+        <div class="col-md-3">
+        <div class="eposide-container" style="background-image: url( /images/series/@Model.Season.Series.Poster)">
+            <a asp-action="PlayEposide" asp-route-id="@ViewBag.profileID" asp-route-eid="@item.EpisodeID">
+            <i class="bi bi-play-circle play-icon"></i>
+            </a>
+        </div>  
+        <p class="text-center">Eposide @(item.EpNum): @item.EpName</p>   
+        </div>
+        }
+    </div>
+    }
+</div>
+
+@section Scripts{
+    <script>
+        let type="s";
+        var profileID = @ViewBag.profileID;
+        var playMovieUrl = '@Url.Action("PlayMovie", "Main")';
+        var playSeriesUrl = '@Url.Action("DisplaySeries", "Main")';
+    </script>
+    <script src="~/js/SearchByName.js"></script>
+}

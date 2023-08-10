@@ -1,0 +1,37 @@
+﻿@model List<Profile>
+@{
+    Layout = "_ProfileLayout";
+    ViewData["Title"] = "Profiles";
+}
+
+<div class="whoIsWatching">
+    <div class="logo-section">
+        <a asp-action="Index"><img src="/Images/logo.png" alt="logo"></a>
+    </div>
+
+    <div class="main-div">
+        <h1>Who's watching?</h1>
+        <div class="memberDiv">
+            @{int i = 1;}
+            @foreach(var item in Model)
+            {
+@*                if (i > 3)
+                    i = 1;*@
+                string profile = "profile" + i;
+                <a asp-controller="Main" asp-action="Index" asp-route-id="@item.ProfileID" class="addIcon @profile"><span>@item.ProfileName</span></a>
+                i++;
+            }
+            @if (ViewBag.ProfileCount < 5)
+            {
+                <a class="addIcon" asp-action="Create" asp-route-id="@ViewBag.ProfileCount"><i class="fas fa-plus-circle"></i> <span>Add Profile</span></a>
+            }
+        </div>
+        <a class="manageProfile" asp-action="ViewProfileToEdit">manage Profile</a>
+    </div>
+</div>
+
+@section Css{ 
+    <style>  
+
+    </style>
+}

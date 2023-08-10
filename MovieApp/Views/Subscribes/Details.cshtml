@@ -1,0 +1,33 @@
+﻿@model MovieApp.Models.Subscribe
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/AdminPanel/_AdminPanelLayout.cshtml";
+}
+
+<div>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Duration
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DurationDays) Day(s)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)$
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Role)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Role.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-success py-2 px-3" asp-action="Edit" asp-route-id="@Model?.SubscribeID">Edit</a> |
+    <a class="btn btn-info" asp-action="Index">Back</a>
+</div>

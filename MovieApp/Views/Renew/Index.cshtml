@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using MovieApp.Services;
+@using MovieApp.IServices;
+@inject SignInManager<User> SignInManager
+@inject ILoggedDataService loggedDataService;
+@inject IProfileService profileService;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Identity/Pages/Account/Manage/_Layout.cshtml";
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        var fullname = (await loggedDataService.GetUserFullName());
+        if (fullname != null)
+            ViewBag.loggedUserFullName = fullname;
+
+        int userId = loggedDataService.LoggedUserId();
+        ViewBag.Profiles = await profileService.GetProfileByUserId(userId);
+        ViewBag.checkAdmin = await loggedDataService.checkUserAccessByRoleName(userId, "Admin");
+    }
+    if (ViewData["PrevRole"] == null)
+    {
+        <h1>Renew Subscription</h1>
+    }
+    else
+    {
+        <h1>Renew: @ViewData["PrevRole"]</h1>
+    }
+}
+
+<form id="renewForm" asp-action="CreateRenew" method="post">
+    <section>
+        <div class="bt-drop-in-wrapper">
+            <div id="bt-dropin"></div>
+        </div>
+    </section>
+    <input type="text" id="nonce" name="Nonce" hidden />
+    <div class="d-flex justify-content-center mb-2">
+        <button id="registerSubmit" type="submit" class="btn btn-success">Renew</button>
+    </div>
+</form>
+
+<script src="https://js.braintreegateway.com/web/dropin/1.22.0/js/dropin.min.js"></script>
+<script>
+    var client_token = "@ViewBag.ClientToken";
+    var form = document.querySelector('#renewForm');
+
+    braintree.dropin.create({
+        authorization: client_token,
+        container: '#bt-dropin'
+    }, function (createErr, instance) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            instance.requestPaymentMethod(function (err, payload) {
+                if (err) {
+                    return;
+                }
+
+                document.querySelector('#nonce').value = payload.nonce;
+                form.submit();
+            });
+        });
+    });
+</script>
+

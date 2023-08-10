@@ -1,0 +1,195 @@
+﻿@page
+@model RegisterModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>Register - MovieApp</title>
+    <style>
+        body{
+            overflow-x: hidden;
+        }
+        .container-fluid {
+            position: relative;
+            height: 100vh;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('/Images/login-bg.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position:center;
+            opacity: 0.1; /* Adjust the opacity value for the background image */
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            opacity: 0.9; /* Adjust the opacity value for the overlay */
+        }
+
+        .login-container {
+            position: absolute;
+            top: 56.7vh;
+            left: 50vw;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            background-color: #000000bb;
+            padding: 30px;
+            border-radius: 8px;
+            /*width: 60vw;*/
+            color: aliceblue;
+        }
+
+
+        .login-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button[type="submit"] {
+            align-items: center;
+            justify-content: center;
+            width: 20vw;
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body class="background-image overlay">
+    <div class="container-fluid">
+        <div class="login-container">
+            <h1 class="mb-2 text-center">Registeration Form</h1>
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.fname">First Name</label>
+                        <input asp-for="Input.fname" class="form-control" autocomplete="fname" aria-required="true" />    
+                        <span asp-validation-for="Input.fname" class="text-danger"></span>
+                    </div>
+                        <div class="form-group col-sm-6">
+                        <label asp-for="Input.lname">Last Name</label>
+                        <input asp-for="Input.lname" class="form-control" autocomplete="lname" aria-required="true" />
+                        <span asp-validation-for="Input.lname" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.BirthDate"></label>
+                        <input asp-for="Input.BirthDate" class="form-control" autocomplete="BirthDate" aria-required="true" />
+                        <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.CountryId">Country</label>
+                        @*<input asp-for="Input.CountryId" class="form-control" autocomplete="country" aria-required="true" />*@
+                        <select asp-for="Input.CountryId" asp-items="@ViewBag.Countries" class="form-select" aria-label="Select Country">
+                        </select>
+                        <span asp-validation-for="Input.CountryId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.SubId" class="control-label">Subscription</label>
+                        <select asp-for="Input.SubId" asp-items="@ViewBag.Subscribes" class="form-select" aria-label="Select Roles">
+                        </select>
+                        <span asp-validation-for="Input.SubId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.Password"></label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-6">
+                        <label asp-for="Input.ConfirmPassword"></label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+                <section>
+                    <div class="bt-drop-in-wrapper">
+                        <div id="bt-dropin"></div>
+                    </div>
+                </section>
+                @Html.HiddenFor(n => n.Input.Nonce, new { @id = "nonce" })
+                <div class="d-flex justify-content-center mb-2">
+                <button id="registerSubmit" type="submit">Sign Up</button>
+                </div>
+            </form>
+            <div class="signup-container">
+                <span>Already have an Account?</span>
+                <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign In now</a>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script src="https://js.braintreegateway.com/web/dropin/1.22.0/js/dropin.min.js"></script>
+<script>
+    var client_token = "@ViewBag.ClientToken";
+    var form = document.querySelector('#registerForm');
+
+    braintree.dropin.create({
+        authorization: client_token,
+        container: '#bt-dropin'
+    }, function (createErr, instance) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            instance.requestPaymentMethod(function (err, payload) {
+                if (err) {
+                    return;
+                }
+
+                document.querySelector('#nonce').value = payload.nonce;
+                form.submit();
+            });
+        });
+    });
+</script>

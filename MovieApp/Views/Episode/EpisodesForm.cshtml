@@ -1,0 +1,56 @@
+﻿@model Episode
+
+@{
+    ViewData["Title"] = "Add Episodes";
+    Layout = "../AdminPanel/_AdminPanelLayout";
+}
+
+<div class="row justify-content-between">
+    <div class=" col-md-7 col-lg-4 p-3 add-container">
+        <form asp-action="@(Model != null && Model.SeasonID > 0 ? "Edit":"Add")" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model != null && Model.SeasonID > 0)
+            {
+                <input type="hidden" asp-for="SeasonID" />
+                <input type="hidden" asp-for="EpisodeID" />
+            }
+            <div class="form-group ">
+                <label asp-for="EpNum" class="control-label p-2"></label>
+                <input asp-for="EpNum" class="form-control" />
+                <span asp-validation-for="EpNum" class="text-danger"></span>
+            </div>
+            <div class="form-group ">
+                <label asp-for="EpName" class="control-label p-2"></label>
+                <input asp-for="EpName" class="form-control">
+                <span asp-validation-for="EpName" class="text-danger"></span>
+            </div>
+@*            <div class="form-group ">
+                <label asp-for="link" class="control-label p-2"></label>
+                <input type="file" asp-for="link" class="form-control" />
+                <span asp-validation-for="link" class="text-danger"></span>
+            </div>*@
+            
+            <div class="form-group ">
+                <label asp-for="link" class="control-label p-2"></label>
+                <input asp-for="link" class="form-control" />
+                <span asp-validation-for="link" class="text-danger"></span>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <button type="submit" class="btn btn-success py-2 px-3"> <i class="bi bi-check2"></i> Save</button>
+                </div>
+                <div class="form-group col-6">
+                    <a asp-action="Index" asp-route-id="@(Model != null && Model.SeasonID > 0 ? Model.SeasonID:ViewBag.ID)"><button class="btn btn-primary " onclick="window.history.go(-1); return false;"> <i class="bi bi-x"></i> Cancel</button></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

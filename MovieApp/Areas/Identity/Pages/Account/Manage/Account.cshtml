@@ -1,0 +1,109 @@
+﻿@page
+@model MovieApp.Areas.Identity.Pages.Account.Manage.AccountModel
+@{
+    ViewData["Title"] = "Account Information";
+    ViewData["ActivePage"] = ManageNavPages.AccountInformation;
+}
+
+<h3>@ViewData["Title"]</h3>
+<dl class="row">
+    <dt class="col-5 col-xl-3">
+        First Name
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.fname)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        Last Name
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.lname)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        Password
+    </dt>
+    <dd class="col-sm-6">
+        ********
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-page="./ChangePassword" class="text-decoration-underline">Change</a>
+    </dd>
+    <dt class="col-5 col-xl-3">
+        Country
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.country)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        Subscription
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.userSubscription)
+    </dd>
+@*    <dd class="col-sm-1">
+        <a asp-controller="Renew" asp-action="Index" class="text-decoration-underline">Change</a>
+    </dd>*@
+    <dt class="col-5 col-xl-3">
+        Expiration Date
+    </dt>
+    <dd class="col-sm-6">
+        @Html.DisplayFor(model => model.ExpirationDate)
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-controller="Renew" asp-action="Index" class="text-decoration-underline">Renew</a>
+    </dd>
+    <dt class="col-5 col-xl-3">
+        Profiles Count
+    </dt>
+    <dd class="col-sm-6">
+        @Model.loggedUser.ProfileUsers.Count
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-controller="Profile" asp-action="ViewProfileToEdit" class="text-decoration-underline">Manage</a>
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.BirthDate)
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.BirthDate)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.Email)
+    </dt>
+    <dd class="col-sm-6">
+        @Html.DisplayFor(model => model.loggedUser.Email)
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-page="./Email" class="text-decoration-underline">Change</a>
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.EmailConfirmed)
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.EmailConfirmed)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.PhoneNumber)
+    </dt>
+    <dd class="col-sm-6">
+        @Html.DisplayFor(model => model.loggedUser.PhoneNumber)
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-page="./Index" class="text-decoration-underline">Change</a>
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.PhoneNumberConfirmed)
+    </dt>
+    <dd class="col-7 col-xl-9">
+        @Html.DisplayFor(model => model.loggedUser.PhoneNumberConfirmed)
+    </dd>
+    <dt class="col-5 col-xl-3">
+        @Html.DisplayNameFor(model => model.loggedUser.TwoFactorEnabled)
+    </dt>
+    <dd class="col-sm-6">
+        @Html.DisplayFor(model => model.loggedUser.TwoFactorEnabled)
+    </dd>
+    <dd class="col-sm-1">
+        <a asp-page="./TwoFactorAuthentication" class="text-decoration-underline">Manage</a>
+    </dd>
+</dl>

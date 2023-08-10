@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\NewFolder\**" />
+    <Content Remove="wwwroot\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\NewFolder\**" />
+    <None Remove="wwwroot\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\landing.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Season\Details.cshtml" />
+    <None Include="Views\Season\Index.cshtml" />
+    <None Include="Views\Season\SeasonForm.cshtml" />
+    <None Include="Views\Series\Details.cshtml" />
+    <None Include="Views\Series\Index.cshtml" />
+    <None Include="Views\Series\SeriesForm.cshtml" />
+    <None Include="wwwroot\css\_MainLayout.css" />
+    <None Include="wwwroot\js\areas\bararea.js" />
+    <None Include="wwwroot\js\areas\chartarea.js" />
+    <None Include="wwwroot\js\areas\piearea.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.bundle.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.bundle.min.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.js" />
+    <None Include="wwwroot\lib\chart.js\Chart.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Braintree" Version="5.18.0" />
+    <PackageReference Include="Json.Net" Version="1.0.33" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.15" />
+    <PackageReference Include="NToastNotify" Version="8.0.0" />
+    <PackageReference Include="SendGrid" Version="9.28.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\Movies\" />
+    <Folder Include="wwwroot\Images\Series\" />
+    <Folder Include="wwwroot\Videos\episodes\" />
+  </ItemGroup>
+
+</Project>

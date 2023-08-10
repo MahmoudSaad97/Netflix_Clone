@@ -1,0 +1,154 @@
+﻿@model MovieApp.Models.Movie
+
+@{
+    ViewData["Title"] = "Add Movie";
+    Layout = "../AdminPanel/_AdminPanelLayout";
+}
+
+@*<h2>@(Model != null && Model.MovieID > 0 ? "Edit" : "Add") Movie</h2>
+<hr />*@
+
+@section Css{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+    <style>
+        .filter-option-inner-inner{
+            color:black ;
+        }
+    </style>
+}
+
+<div class="row justify-content-between">
+    <div class=" col-md-7 col-lg-4 p-3 add-container">
+        <form asp-action="@(Model != null && Model.MovieID > 0 ? "Edit":"Add")" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model != null && Model.MovieID > 0)
+            {
+                <input type="hidden" asp-for="MovieID" />
+            }
+            <div class="form-group">
+                <label asp-for="MovieName" class="control-label p-2"></label>
+                <input asp-for="MovieName" class="form-control" />
+                <span asp-validation-for="MovieName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duration" class="control-label p-2"></label>
+                <input asp-for="Duration" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <label asp-for="Description" class="text-dark"></label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+                <div class="form-group  text-dark w-100 my-2">
+                    <label asp-for="Genries" class="control-label p-2"></label>
+                    <Select multiple asp-items="@ViewBag.Genries" name="AddGenries" id="genrie" class="selectpicker" data-live-search="true">
+                    </Select>
+                    <span asp-validation-for="Genries" class="text-danger"></span>
+
+                </div>
+                <div class="form-group  text-dark w-100 my-2">
+                    <label asp-for="Actors" class="control-label p-2"></label>
+                    <Select multiple asp-items="@ViewBag.Actors" name="AddActors" class="selectpicker" data-live-search="true">
+                    </Select>
+                    <span asp-validation-for="Actors" class="text-danger"></span>
+
+                </div>
+            @if (Model != null && Model.MovieID > 0)
+            {
+                    <div class="form-group text-dark my-2">
+                        <label asp-for="Genries" class="control-label p-2">Remove Genrie</label>
+                        <Select multiple asp-items="@ViewBag.RGenrie" name="RemoveGenries" id="genrie" class="selectpicker" data-live-search="true">
+                        </Select>
+
+                    </div>
+                    <div class="form-group text-dark my-2">
+                        <label asp-for="Genries" class="control-label p-2">Remove Actors</label>
+                        <Select multiple asp-items="@ViewBag.RActor" name="RemoveGenries" id="genrie" class="selectpicker" data-live-search="true">
+                        </Select>
+
+                    </div>
+
+            }
+
+            <div class="form-group">
+                <label asp-for="Poster" class="form-label p-2"></label>
+                <input type="file" asp-for="Poster" class="form-control" accept=".jpg,.jpeg" />
+                <span asp-validation-for="Poster" class="text-danger"></span>
+            </div>
+@*            <div class="row">
+                <div class="form-group col-lg-5">
+                    <label asp-for="Rate" class="control-label p-2"></label>
+                    <input asp-for="Rate" class="form-control" />
+                    <span asp-validation-for="Rate" class="text-danger"></span>
+                </div>
+                <div class="form-group col-lg-6">
+                    <label asp-for="Views" class="control-label p-2"></label>
+                    <input asp-for="Views" class="form-control" />
+                    <span asp-validation-for="Views" class="text-danger"></span>
+                </div>
+
+
+            </div>
+*@            <div class="form-group">
+                <label asp-for="ReleaseDate" class="control-label p-2"></label>
+                <input asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Director" class="control-label p-2"></label>
+                <input asp-for="Director" class="form-control" />
+                <span asp-validation-for="Director" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Link" class="control-label p-2"></label>
+                <input asp-for="Link" class="form-control" />
+                <span asp-validation-for="Link" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Trailer" class="form-label p-2"></label>
+                <input asp-for="Trailer" class="form-control" accept=".mp4" />
+                <span asp-validation-for="Trailer" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6">
+                    <button type="submit" class="btn btn-success py-2 px-3"> <i class="bi bi-check2"></i> Save</button>
+                </div>
+                <div class="form-group col-6">
+                    <a asp-action="Index" onclick="window.history.go(-1); return false;"><button class="btn btn-primary"> <i class="bi bi-x"></i> Cancel</button></a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 @(Model != null && Model.MovieID > 0 ? "":"d-none")" id="poster-container">
+        @*        <img src="@(Model != null && Model.MovieID > 0 ? $"data:image/*;base64,{Convert.ToBase64String(Model.Poster)}":string.Empty)" alt="Film Poster" class="img-thumbnail" />
+        *@        <img src="@(Model != null && Model.MovieID > 0 ? $"/Images/movies/{Model.Poster}":string.Empty)" alt="Film Poster" class="img-thumbnail" />
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script>    
+        $(document).ready(function () {
+            $('#Poster').on('change', function () {
+
+                var image = window.URL.createObjectURL(this.files[0]);
+                var postercontainer = $('#poster-container');
+                postercontainer.removeClass('d-none')
+                postercontainer.find('img').attr('src', image);
+            })
+
+            $('select').selectpicker();
+
+        })
+    </script>
+}

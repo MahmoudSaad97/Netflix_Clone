@@ -1,0 +1,61 @@
+﻿@model IEnumerable<MovieApp.Models.Genrie>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminPanel/_AdminPanelLayout.cshtml";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary py-2 px-3 my-2">
+        <i class="bi bi-plus"></i>Add New Genrie
+    </a>
+</p>
+<div class="tab-pane">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center" id="GenriesTable">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Genries
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+        @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GenrieID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GenrieName)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.GenrieID" class="btn btn-outline-secondary"><i class="bi bi-filter-square"></i> Details</a> |
+                        <a asp-action="Edit" asp-route-id="@item.GenrieID" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.GenrieID" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete</a>
+                    </td>
+                </tr>
+        }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Css{
+    <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        let table = $("#GenriesTable").DataTable();
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            table.columns.adjust().recalc();
+        });
+    </script>
+}

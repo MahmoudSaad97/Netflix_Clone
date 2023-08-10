@@ -1,0 +1,36 @@
+﻿@model DisplayMoviesViewModel
+@{
+
+}
+<div class="container">
+    @{
+        int i = 1;
+        @foreach (var item in Model.PlayedSeries.Seasons)
+        {
+            <h3>Season @(i++): @item.SeasonName.Split(":").Last()</h3>
+            <div class="row">
+            @foreach (var eposide in item.Episodes)
+                {
+                    <div class="col-md-3">
+                        <div class="eposide-container" style="background-image: url(/images/series/@Model.PlayedSeries.Poster)">
+                            <a asp-action="PlayEposide" asp-route-id="@ViewBag.profileID" asp-route-eid="@eposide.EpisodeID">
+                                <i class="bi bi-play-circle play-icon"></i>
+                            </a>
+                        </div>
+                        <p class="text-center">Eposide @(eposide.EpNum): @eposide.EpName</p>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@section Scripts{
+    <script>
+        let type="s";
+        var profileID = @ViewBag.profileID;
+        var playMovieUrl = '@Url.Action("PlayMovie", "Main")';
+        var playSeriesUrl = '@Url.Action("DisplaySeries", "Main")';
+    </script>
+    <script src="~/js/searchbyname.js"></script>
+}

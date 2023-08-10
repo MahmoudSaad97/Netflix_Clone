@@ -1,0 +1,550 @@
+﻿@model DisplayMoviesViewModel
+
+@{
+    ViewData["Title"] = "Main";
+}
+@if(Model.PlayedMovie != null)
+{
+<div class="intro">
+        <video src="@Model.PlayedMovie.Link" type="video/mp4" id="video" poster="/images/movies/@Model.PlayedMovie.Poster" autoplay muted loop>
+
+    </video>
+    <div class="intro-info">
+        <div class="d-flex align-items-center my-2">
+        <h4>@Model.PlayedMovie.MovieName</h4>
+            <button class="btn ms-5" id="muteBtn">
+                <i class="bi bi-volume-mute-fill fs-4 text-light" id="mute"></i>
+        </button>
+        </div>
+        <div>
+            <a asp-action="PlayMovie" asp-route-id="@ViewBag.profileID" asp-route-mid="@Model.PlayedMovie.MovieID">
+                <button class="btn btn-dark"><i class="bi bi-play mx-1 fs-5"></i>Play</button>
+            </a>
+            <a asp-action="MyList" asp-route-id="@ViewBag.profileID">
+                <button class="btn btn-dark"><i class="bi bi-list mx-1 fs-5"></i>My List</button>
+            </a>
+        </div>
+        <p class="mt-2 w-50 fs-5">@Model.PlayedMovie.Description</p>
+    </div>
+</div>
+}
+@if(Model.AllMovies != null && Model.AllMovies.Count > 0)
+{
+    foreach (var item in Model.AllMovies)
+    {
+        <div class="modal fade movie-modal" id="Movie@(item.MovieID)" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered w-75">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="MovieModalLabel">@item.MovieName</h1>
+                        <button type="button" class="btn-close text-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body .movie-modal-info">
+                        <div class="movie-modal-body">
+                            <video class="trailer" src="" id="trailerVideo@(item.MovieID)" poster="/images/movies/@item.Poster" data-trailerSrc="@item.Trailer" autoplay>
+                            </video>
+                            <div class="movie-modal-info">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="PlayMovie" asp-route-id="@ViewBag.profileID" asp-route-mid="@item.MovieID">
+                                        <button class="btn btn-outline-light"><i class="bi bi-play mx-1"></i>Play</button>
+                                    </a>
+                                    <a onclick="ManageList(@ViewBag.profileID,@item.MovieID,'@Url.Action("AddToList","Main")',this)">
+                                        <button class="btn btn-outline-light">
+                                            <i class="@(!Model.wishListMovies.Any(m=>m.MovieID == item.MovieID) ? "bi bi-patch-plus":"bi bi-trash") mx-1"></i>
+                                            <span>@(!Model.wishListMovies.Any(m => m.MovieID == item.MovieID) ? "Add To List" : "Remove From List")</span>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-3">
+                            <div class="w-50">
+                                <h5>Story</h5>
+                                <p>@item.Description</p>
+                            </div>
+                            <div class="w-50">
+                                <h5>Cast:</h5>
+                                <div class="actor-container">
+                                    @foreach (var actor in item.Actors)
+                                    {
+                                        <a asp-action="S" asp-route-id="@ViewBag.profileID" asp-route-t="all" asp-route-searchName="@actor.ActorName">
+                                            <p class="m-0">@actor.ActorName</p>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end p-3">
+                            <div class="w-50">
+                                <h5>Genres</h5>
+                                <div class="genriee-cont">
+                                    @foreach (var genrie in item.Genries)
+                                    {
+                                        <a asp-action="S" asp-route-id="@ViewBag.profileID" asp-route-t="all" asp-route-searchName="@genrie.GenrieName" class="text-light">
+                                            <p class="m-0">@genrie.GenrieName</p>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+@if(Model.AllSeries != null && Model.AllSeries.Count > 0)
+{
+    foreach (var item in Model.AllSeries)
+    {
+        <div class="modal fade series-modal" id="Series@(item.SeriesID)" tabindex="-1" aria-labelledby="SeriesModalLabel" aria-hidden="true">
+            <div class="modal-dialog w-75">
+                <div class="modal-content bg-dark text-light">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="SeriesModalLabel">@item.SeriesName</h1>
+                        <button type="button" class="btn-close text-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body .movie-modal-info">
+                        <div class="movie-modal-body">
+                            <video class="trailer" src="" id="trailerVideo@(item.SeriesID)" poster="/images/series/@item.Poster" data-trailerSrc="@item.Trailer" autoplay>
+                            </video>
+                            <div class="movie-modal-info">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="DisplaySeries" asp-route-id="@ViewBag.profileID" asp-route-sid="@item.SeriesID">
+                                        <button class="btn btn-outline-light"><i class="bi bi-play mx-1"></i>Play</button>
+                                    </a>
+                                    <a onclick="ManageListSeries(@ViewBag.profileID,@item.SeriesID,'@Url.Action("AddSeriesToList","Main")',this)">
+                                        <button class="btn btn-outline-light">
+                                            <i class="@(!Model.wishListSeries.Any(s=>s.SeriesID == item.SeriesID) ? "bi bi-patch-plus":"bi bi-trash") mx-1"></i>
+                                            <span>@(!Model.wishListSeries.Any(s => s.SeriesID == item.SeriesID) ? "Add To List" : "Remove From List")</span>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-3">
+                            <div class="w-50">
+                                <h5>Story</h5>
+                                <p>@item.Description</p>
+                            </div>
+                            <div class="w-50">
+                                <h5>Cast:</h5>
+                                <div class="actor-container">
+                                    @foreach (var actor in item.Actors)
+                                    {
+                                        <a asp-action="S" asp-route-id="@ViewBag.profileID" asp-route-t="all" asp-route-searchName="@actor.ActorName">
+                                            <p class="m-0">@actor.ActorName</p>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between p-3">
+                            <div class="w-50">
+                                @{
+                                    int i = 1;
+                                    @foreach (var season in item.Seasons)
+                                    {
+                                        <div class="row align-items-center p-3">
+                                            <div class="col-md-5 season-poster" style="background-image: url(/images/series/@item.Poster)" loading="lazy">
+                                                <a asp-action="DisplaySeason" asp-route-id="@ViewBag.profileID" asp-route-sid="@season.SeasonID">
+                                                    <i class="bi bi-play-circle play-icon"></i>
+                                                </a>
+                                            </div>
+                                            <p class="col-md-6">Season @(i++): @season.SeasonName</p>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="w-50">
+                                <h5>Genres</h5>
+                                <div class="genriee-cont">
+                                    @foreach (var genrie in item.Genries)
+                                    {
+                                        <a asp-action="S" asp-route-id="@ViewBag.profileID" asp-route-t="all" asp-route-searchName="@genrie.GenrieName" class="text-light">
+                                            <p class="m-0">@genrie.GenrieName</p>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+<div class="movies-container">
+    @if (Model.NewestMovies != null && Model.NewestMovies.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center text-light">
+            <h3 class="text-light">Newest Movies</h3>
+                <a asp-route-id="@ViewBag.profileID" asp-action="NewAndPopular" asp-route-t="movies" asp-route-category="new" class="text-light">
+                View More.. <i class="bi bi-arrow-right"></i>
+            </a>    
+            </div>
+            <div class="movie-wrapper">
+                <div class="movies">
+                    @foreach (var item in Model.NewestMovies)
+                    {
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#Movie@(item.MovieID)">
+                            <div class="poster" style="background-image: url(/images/movies/@item.Poster)">
+                            </div>
+                            <div class="info">
+                                <h4>@item.MovieName</h4>
+                                <p>@item.Description</p>
+                                <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                                    <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+    @if (Model.TopMovies.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center text-light">
+            <h3 class="text-light">Top Movies</h3>   
+            </div>
+            <div class="movie-wrapper">
+                <div class="movies top-items">
+                    @foreach (var item in Model.TopMovies)
+                    {
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#Movie@(item.MovieID)" loading="lazy">
+                            <div class="poster" style="background-image: url(/images/movies/@item.Poster)">
+                            </div>
+                            <div class="info">
+                                <h4>@item.MovieName</h4>
+                                <p>@item.Description</p>
+                                <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                                    <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+    @if (Model.TrendingMovies.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center text-light">
+                <h3 class="text-light">Trending Movies</h3>
+                <a asp-route-id="@ViewBag.profileID" asp-action="NewAndPopular" asp-route-t="movies" asp-route-category="trend" class="text-light">
+                    View More.. <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="movie-wrapper">
+                <div class="movies">
+                    @foreach (var item in Model.TrendingMovies)
+                    {
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#Movie@(item.MovieID)" loading="lazy">
+                            <div class="poster" style="background-image: url(/images/movies/@item.Poster)">
+                            </div>
+                            <div class="info">
+                                <h4>@item.MovieName</h4>
+                                <p>@item.Description</p>
+                                <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                                    <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if ((Model.wishListMovies !=null && Model.wishListMovies.Any()) || (Model.wishListSeries !=null && Model.wishListSeries.Any()) )
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="text-light">MyList</h3>
+            </div>
+            <div class="movie-wrapper">
+            <div class="movies">
+                @foreach (var item in Model.wishListMovies)
+                {
+                    <div class="item" data-bs-toggle="modal" data-bs-target="#Movie@(item.MovieID)" loading="lazy">
+                        <div class="poster" style="background-image: url(/images/movies/@item.Poster)">
+                        </div>
+                        <div class="info">
+                            <h4>@item.MovieName</h4>
+                            <p>@item.Description</p>
+                            <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                                <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                            </p>
+                        </div>
+                    </div>
+                    }
+                @foreach (var item in Model.wishListSeries)
+                {
+                    <div class="item" data-bs-toggle="modal" data-bs-target="#Series@(item.SeriesID)">
+                        <div class="poster" style="background-image: url(/images/series/@item.Poster)">
+                        </div>
+                        <div class="info">
+                            <h4>@item.SeriesName</h4>
+                            <p>@item.Description</p>
+                            <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.Votes != 0) ? (item.Rate / item.Votes) : 0)</span>
+                                <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                            </p>
+                        </div>
+                    </div>
+                }
+
+            </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+
+
+    @if (Model.NewestSeries != null && Model.NewestSeries.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center text-light">
+                <h3 class="text-light">Newest Series</h3>
+                <a asp-route-id="@ViewBag.profileID" asp-action="NewAndPopular"  asp-route-t="tvshow" asp-route-category="new" class="text-light">
+                    View More.. <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="movie-wrapper">
+                <div class="movies">
+                    @foreach (var item in Model.NewestSeries)
+                    {
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#Series@(item.SeriesID)">
+                            <div class="poster" style="background-image: url(/images/series/@item.Poster)">
+                            </div>
+                            <div class="info">
+                                <h4>@item.SeriesName</h4>
+                                <p>@item.Description</p>
+                                <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.Votes != 0) ? (item.Rate / item.Votes) : 0)</span>
+                                    <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+    @if (Model.TopSeries.Any())
+    {
+        <section>
+            <h3 class="text-light">Top Series</h3>
+            <div class="movie-wrapper">
+                <div class="movies top-items">
+                    @foreach (var item in Model.TopSeries)
+                    {
+                        <div class="item" data-bs-toggle="modal" data-bs-target="#Series@(item.SeriesID)">
+
+                            <div class="poster" style="background-image: url(/images/series/@item.Poster)">
+                            </div>
+                            <div class="info">
+                                <h4>@item.SeriesName</h4>
+                                <p>@item.Description</p>
+                                <p class="data">
+                                    <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.Votes != 0) ? (item.Rate / item.Votes) : 0)</span>
+                                    <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+    @if (Model.TrendingSeries.Any())
+    {
+        <section>
+            <div class="d-flex justify-content-between align-items-center text-light">
+                <h3 class="text-light">trending Series</h3>
+                <a asp-route-id="@ViewBag.profileID" asp-action="NewAndPopular" asp-route-t="tvshow" asp-route-category="trend" class="text-light">
+                    View More.. <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>            <div class="movies">
+                @foreach (var item in Model.TrendingSeries)
+                {
+                    <div class="item" data-bs-toggle="modal" data-bs-target="#Series@(item.SeriesID)">
+
+                        <div class="poster" style="background-image: url(/images/series/@item.Poster)">
+                        </div>
+                        <div class="info">
+                            <h4>@item.SeriesName</h4>
+                            <p>@(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)</p>
+                            <p class="data">
+                                <span><i class="bi bi-star-fill text-warning"></i>@String.Format("{0:0.0}",  (item.Votes != 0) ? (item.Rate / item.Votes) : 0)</span>
+                                <span><i class="bi bi-eye-fill text-info"></i>@String.Format("{0:N0}", item.Views)</span>
+                            </p>
+                        </div>
+                    </div>
+                }
+                <div class="scroll-arrows">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+            </div>
+        </section>
+    }
+</div>
+
+@section Scripts{
+    <script>
+          var video = document.getElementById('video');
+          var muteButton = document.getElementById('muteBtn');
+          var muteIcon = document.getElementById('mute');
+        $(document).ready(function () {
+          muteButton.addEventListener('click', function () {
+            if (video.muted) {
+              video.muted = false;
+              muteIcon.classList.remove('bi-volume-mute-fill');
+              muteIcon.classList.add('bi-volume-up');
+            } else {
+              video.muted = true;
+              muteIcon.classList.remove('bi-volume-up');
+              muteIcon.classList.add('bi-volume-mute-fill');
+            }
+          });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".scroll-arrows").each(function () {
+                var section = $(this).closest("section");
+                var movies = section.find(".movies");
+                var scrollDistance = movies.find(".item").outerWidth(true);
+                var scrollPosition = 0;
+                var containerWidth = movies.width();
+                var totalWidth = movies[0].scrollWidth;
+
+                $(window).on("resize", function () {
+                    containerWidth = movies.width();
+                    scrollArrow = section.find(".scroll-arrows")
+                   if(totalWidth <= containerWidth){
+                       scrollArrow.hide();
+                   }
+                });
+                if (totalWidth <= containerWidth) {
+                    $(this).hide();
+                }
+                $(this).find(".bi-chevron-right").on("click", function () {
+                    if (scrollPosition >= totalWidth - containerWidth) {
+                        scrollPosition = 0;
+
+                    } else {
+                        scrollPosition += scrollDistance;
+
+                    }
+                    movies.animate({ scrollLeft: scrollPosition }, 500);
+                });
+
+                $(this).find(".bi-chevron-left").on("click", function () {
+                    if (scrollPosition <= 0) {
+                        scrollPosition = totalWidth - containerWidth;
+                    } else {
+                        scrollPosition -= scrollDistance;
+
+                    }
+                    movies.animate({ scrollLeft: scrollPosition }, 500);
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const movieModals = document.querySelectorAll('.movie-modal');
+            movieModals.forEach(function (modal) {
+                const movieID = modal.id.replace('Movie', '');
+                const trailerVideo = modal.querySelector('.trailer');
+                modal.addEventListener('shown.bs.modal', function () {
+                        const trailersrc = trailerVideo.dataset.trailersrc;
+                    if (!trailerVideo.attributes.src.value) {
+                        trailerVideo.src = trailersrc;
+                    }
+                    trailerVideo.play();
+                    video.pause();
+                });
+
+                modal.addEventListener('hidden.bs.modal', function () {
+                    trailerVideo.pause();
+                    trailerVideo.currentTime = 0;
+                    video.play();
+                });
+            });
+            
+            const seriesModal = document.querySelectorAll('.series-modal');
+            seriesModal.forEach(function (modal) {
+                const movieID = modal.id.replace('Series', '');
+                const trailerVideo = modal.querySelector('.trailer');
+
+                modal.addEventListener('shown.bs.modal', function () {
+                    console.log(trailerVideo)
+                    const trailersrc = trailerVideo.dataset.trailersrc;
+                    console.log(trailersrc);
+                    console.log(!trailerVideo.attributes.src.value)
+                    if (!trailerVideo.attributes.src.value) {
+                        trailerVideo.src = trailersrc;
+                    }
+                    trailerVideo.play();
+                });
+
+                modal.addEventListener('hidden.bs.modal', function () {
+                    trailerVideo.pause();
+                    trailerVideo.currentTime = 0;
+                });
+            });
+        });
+
+
+        window.addEventListener('scroll',function (){
+            const introDiv = document.querySelector('.intro');
+            let scrollTop = window.pageYOffset || document.doumentElement.scrollTop;
+            let introDivBottom = introDiv.offsetTop + introDiv.offsetHeight;
+
+            if(scrollTop > (introDivBottom - 100))
+                video.pause();
+            else
+                video.play()
+        })
+    </script>
+    <script>
+        let type;
+        var profileID = @ViewBag.profileID;
+        var playMovieUrl = '@Url.Action("PlayMovie", "Main")';
+        var playSeriesUrl = '@Url.Action("DisplaySeries", "Main")';
+    </script>
+    <script src="~/js/searchbyname.js"></script>
+    }

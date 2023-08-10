@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Session;
+@using MovieApp.Services;
+@using MovieApp.IServices;
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject ILoggedDataService loggedDataService;
+@inject IProfileService profileService;
+@inject IPaymentService paymentService;
+
+@{
+    //var CurrUser = UserManager.Users.FirstOrDefault(a => a.UserName == ViewContext.HttpContext.User.Identity.Name);
+    //ViewBag.loggedUserFullName = CurrUser.fname + " " + CurrUser.lname;
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        int userId = loggedDataService.LoggedUserId();
+        bool checkAdmin = await loggedDataService.checkUserAccessByRoleName(userId, "Admin");
+        if (!PageUrlContains("renew"))
+        {
+            var fullname = (await loggedDataService.GetUserFullName());
+            if (fullname != null)
+                ViewBag.loggedUserFullName = fullname;
+
+            ViewBag.Profiles = await profileService.GetProfileByUserId(userId);
+            ViewBag.checkAdmin = checkAdmin;
+
+            if (!checkAdmin)
+            {
+                if (DateTime.Now > await paymentService.GetDateTimeExpireByLoggedUserId())
+                {
+                    Context.Response.Clear();
+                    Context.Response.Redirect("/Renew/Index");
+                }
+            }
+        }
+    }
+    bool PageUrlContains(string url)
+    {
+        return ViewContext.HttpContext.Request.Path.Value.ToLower().Contains(url);
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MovieApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/fontawesome-free/css/all.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    @await RenderSectionAsync("Css", required: false)
+
+    <style>
+        body{
+            background-color: #f3f3f3;
+        }
+        h3{
+            color: #333;
+        }
+        li>a{
+            color: #737373;
+        }
+        .customnavbar{
+            padding-bottom: 1.2rem;
+            padding-top: 0.5rem;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="customnavbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-black border-bottom box-shadow mb-3">
+            <div class="container-fluid" style="padding-bottom: 0px;">
+                <a class="navbar-brand" asp-controller="Profile" asp-action="Index">MovieApp</a>
+                <div class="float-end">
+                    <ul class="navbar-nav">
+                        <Partial name="~/Views/Shared/_LoginPartial.cshtml" />
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-5">
+        <main role="main" class="pb-3">
+        @if (SignInManager.IsSignedIn(User) && PageUrlContains("account/manage"))
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <partial name="Manage/_ManageNav" />
+                </div>
+                <div class="col-md-8">
+                    @RenderBody()
+                </div>
+            </div>
+        }
+        else
+        {
+            @RenderBody()
+        }
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - MovieApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

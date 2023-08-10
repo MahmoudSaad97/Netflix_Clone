@@ -1,0 +1,48 @@
+﻿@model Profile
+@{
+    Layout = "_ProfileLayout";
+    ViewData["Title"] = "Profile";
+}
+
+<div class="whoIsWatching">
+    <div class="logo-section">
+        <a asp-action="Index"><img src="/Images/logo.png" alt="logo"></a>
+    </div>
+
+    <div class="main-div">
+        <h1>Create New Profile</h1>
+        <form asp-action="create">
+            <div class="memberDiv">
+                @{
+                    string profile = "profile" + (ViewBag.id + 1);
+                }
+                <a class="addIcon @profile"><input class="input" asp-for="ProfileName" type="text" /></a>
+            </div>
+            <span asp-validation-for="ProfileName" class="d-block text-danger fs-4" style="margin-top:60px;"></span>
+            <input type="submit" class="manageProfile" style="margin-top:5px;" value="Add" />
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <Partial name="_ValidationScriptsPartial" />
+}
+
+@section Css{
+    <style>
+        .addIcon:hover {
+            cursor: default;
+            border: 0px
+        }
+
+        .input {
+            width: inherit;
+            position: absolute;
+            bottom: -3.5rem;
+            left: 0;
+            text-transform: capitalize;
+            font-size: 2rem;
+            margin-bottom: -10px;
+        }
+    </style>
+}

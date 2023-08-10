@@ -1,0 +1,51 @@
+﻿@model MovieApp.Models.Payment
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/AdminPanel/_AdminPanelLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PaymentID" />
+            <div class="form-group">
+                <label asp-for="PaymentMethod" class="control-label">Payment Method</label>
+                <input asp-for="PaymentMethod" class="form-control" />
+                <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreditNumber" class="control-label">CreditCard Number</label>
+                <input asp-for="CreditNumber" class="form-control" />
+                <span asp-validation-for="CreditNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentDate" class="control-label">Payment Date</label>
+                <input asp-for="PaymentDate" class="form-control" />
+                <span asp-validation-for="PaymentDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserID" class="control-label">User Email</label>
+                <select asp-for="UserID" class="form-control" asp-items="ViewBag.UserID"></select>
+                <span asp-validation-for="UserID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="subID" class="control-label">Subscription</label>
+                <select id="subID" name="subID" class="form-control" asp-items="ViewBag.Subscribes"></select>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <button type="submit" class="btn btn-success py-2 px-3"> <i class="bi bi-check2"></i> Save</button>
+                </div>
+                <div class="form-group col-6">
+                    <a asp-action="Index" onclick="window.history.go(-1); return false;"><button class="btn btn-primary"> <i class="bi bi-x"></i> Cancel</button></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

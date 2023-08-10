@@ -1,0 +1,169 @@
+﻿@model DisplayMoviesViewModel
+
+@{
+        ViewData["Title"] = Model.PlayedMovie.MovieName;
+    int profileid = ViewBag.profileID;
+}
+@section Css{
+    <link href="~/css/videostyle.css" rel="stylesheet" />
+}
+
+<div class="container-fluid">
+    <div class="vidoplayer show-controls">
+        <i class="bi bi-play-circle-fill" id="play"></i>
+        <div class="videoControll" id="controls">
+            <div class="video-timeline">
+                <div class="progress-area">
+                    <span>00:00</span>
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+            <div class="video-timer">
+                <p class="current-time">00:00</p>
+                <p class="end-time">00:00</p>
+            </div>
+            <ul class="video-controles">
+                <li class="options left">
+                    <i class="bi bi-play-fill" id="Play-Puse"></i>
+                    <i class="bi bi-skip-backward-circle" id="back-10"></i>
+                    <i class="bi bi-volume-up-fill" id="volume"></i>
+                    <input type="range" min="0" max="1" step="0.1">
+                    <i class="bi bi-skip-forward-circle" id="skip-10"></i>
+                </li>
+@*                <li class="options center">
+                    <i class="bi bi-skip-start-fill" id="skip-start" data-go="@ViewBag.Similar.First()"></i>
+                    <i class="bi bi-skip-end-fill" id="skip-end" data-go="@ViewBag.Similar.Last()"></i>
+                </li>*@
+                <li class="options right">
+                    <i class="bi bi-badge-cc" id="subtitle"></i>
+                    <div class="playback">
+                        <i class="bi bi-gear-fill" id="settings">
+                        </i>
+                        <ul class="speed-options hide">
+                            <li data-speed="2">2x</li>
+                            <li data-speed="1.5">1.5x</li>
+                            <li data-speed="1" class="active">Normal</li>
+                            <li data-speed="0.75">0.75x</li>
+                            <li data-speed="0.5">0.5x</li>
+                        </ul>
+
+                    </div>
+                    <i class="bi bi-card-list" id="similar"></i>
+                    <i class="bi bi-arrows-angle-expand" id="fullscreen"></i>
+                </li>
+            </ul>
+        </div>
+        <div class="similarMovies" id="similaritems">
+            <div class="mb-5 pb-4">
+
+            <h5 class="text-center text-primary">Movies You Would Like To Watch</h5>
+            @foreach (var item in ViewBag.Similar)
+            {
+                <div class="row similar-container">
+                    <div class="col-md-7 season-poster" style="background-image: url(/Images/movies/@item.Poster)" loading="lazy">
+                        <a asp-action="PlayMovie" asp-route-id="@ViewBag.profileID" asp-route-mid="@item.MovieID">
+                            <i class="bi bi-play-circle play-icon"></i>
+                        </a>
+                    </div>
+                    <p class="col-md-4">@item.MovieName</p>
+                </div>
+            }
+            </div>
+        </div>
+        <div class="displayed-data">
+            <h4 class="text-warning">MovieApp</h4>
+            <p>@Model.PlayedMovie.MovieName</p>
+        </div>
+        <video id="video" src="@Model.PlayedMovie.Link" type="video/mp4">
+        </video>
+        <div id="waiting">
+            <div class="lds-ripple"><div></div><div></div></div>
+        </div>
+    </div>
+</div>
+
+
+@if (!ViewBag.exist)
+{
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light w-50 mx-auto">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ratingModalLabel">@Model.PlayedMovie.MovieName</h1>
+                <button type="button" class="btn-close text-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center">Rate This Movie</h5>
+                <span class="text-warning text-center d-block">
+                    <i class="bi bi-star fs-5 rating-icon" data-value="2"></i>
+                    <i class="bi bi-star fs-5 rating-icon" data-value="4"></i>
+                    <i class="bi bi-star fs-5 rating-icon" data-value="6"></i>
+                    <i class="bi bi-star fs-5 rating-icon" data-value="8"></i>
+                    <i class="bi bi-star fs-5 rating-icon" data-value="10"></i>
+                </span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Later</button>
+                <button type="button" class="btn btn-primary" id="sendrate">Send</button>
+            </div>
+        </div>
+    </div>
+</div> 
+}
+
+
+@section Scripts{
+    <script>
+        let type = "m";
+        let exist = '@ViewBag.exist';
+        var profileID = @ViewBag.profileID;
+        var playMovieUrl = '@Url.Action("PlayMovie", "Main")';
+        var playSeriesUrl = '@Url.Action("DisplaySeries", "Main")';
+        let ratingValue = 0;
+        let method = 'SetMovieRate'
+        let showid = @Model.PlayedMovie.MovieID;
+        let progress;
+
+        @if (ViewBag.prog != null)
+        {
+            <text>progress = @(ViewBag.prog); </text>
+        }
+        
+            function sendProgress(id, movieid, prog) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Main/movieProgress',
+                    data: {
+                        id: id,
+                        mid: movieid,
+                        prog: prog
+                    },
+                    success: function (response) {
+                    },
+                    error: function (error) {
+                        console.error('Error sending progress:', error);
+                    }
+                });
+
+        }
+
+            function sendVideoProgress() {
+                const currentTime = video.currentTime;
+                const Duration = video.duration;
+                if (!isNaN(Duration) && Duration > 0) {
+                    const progress = Math.floor((currentTime / Duration) * 100);
+                    if (!video.paused) {
+                    sendProgress(profileID, showid, progress);
+                    }
+                }
+            }
+                setInterval(sendVideoProgress, 3000);
+
+        video.addEventListener('ended', function () {
+            sendProgress(profileID, showid, 100);
+        });
+    </script>
+    <script src="~/js/rateandprogress.js"></script>
+    <script src="~/js/SearchByName.js"></script>
+    <script src="~/js/videoplayerscript.js"></script>
+}

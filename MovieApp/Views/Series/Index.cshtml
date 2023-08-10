@@ -1,0 +1,182 @@
+﻿@using Microsoft.AspNetCore.StaticFiles;
+@model IEnumerable<Series>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "../AdminPanel/_AdminPanelLayout";
+}
+
+<p>
+    <a asp-action="Add">
+        <button class="btn btn-outline-primary py-2 px-3 my-2"><i class="bi bi-plus"></i> Add New Series</button>
+    </a>
+</p>
+<div class="my-3">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> No Series Found
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="tab-pane">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center" id="seriesTable">
+                        <thead>
+                            <tr>
+                                <td class="fw-bold">Series</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="col-12">
+                                            <div class="card mb-3">
+                                                <div class="row g-0 overflow-hidden">
+                                                    <div class="poster col-md-4 col-lg-2" style="background-image: url(/images/series/@item.Poster); background-size: cover; background-position: center;">
+                                                    </div>
+                                                   <div class="col-md-8 col-lg-10">
+                                                        <div class="card-body d-flex flex-column justify-content-between h-100">
+                                                            <div class="d-flex justify-content-between align-items-start">
+                                                                <h5 class="card-title fw-bold fs-4 my-2">@item.SeriesName (@(item.ReleaseDate.Value.Year) ~ @item.EndDate.Value.Year)</h5>
+                                                            <div class="d-flex justify-content-end">
+                                                                <a asp-action="Index" asp-controller="Season" asp-route-id="@item.SeriesID">
+                                                                    <button class="btn btn-outline-secondary"> <i class="bi bi-gear"></i> Manage Seasons</button>
+                                                                </a>
+                                                            </div>
+                                                            </div>
+                                                                <div>
+                                                                <p class="card-text text-justify text-light-50">@item.Description</p>
+                                                                </div>
+                                                            <div class="genrie-container">
+                                                                @foreach (var genrie in item.Genries)
+                                                                {
+                                                                    <p>@genrie.GenrieName</p>
+                                                                }
+                                                            </div>
+                                                            <div class="d-flex justify-content-between align-items-end">
+                                                                <p class="card-text mb-0">
+                                                                    @if (item.Votes != 0 && item.Rate != null && item.Votes != null)
+                                                                    {
+                                                                        float averageRate = (float)(item.Rate / item.Votes);
+                                                                        if (averageRate == 10)
+                                                                        {
+                                                                            for (int i = 0; i < 5; i++)
+                                                                            {
+                                                                                <i class="bi bi-star-fill text-warning"></i>
+                                                                            }
+                                                                            <small class="text-body-secondary"> @string.Format("{0:0.0}", (item.Rate / item.Votes))</small>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            double formattedRate = Math.Round(averageRate, 1);
+                                                                            int fullStars = (int)formattedRate;
+                                                                            bool hasHalfStar = (formattedRate - fullStars) >= 0.5;
+
+                                                                            for (int i = 0; i < fullStars / 2; i++)
+                                                                            {
+                                                                                <i class="bi bi-star-fill text-warning"></i>
+                                                                            }
+                                                                            if (hasHalfStar)
+                                                                            {
+                                                                                <i class="bi bi-star-half text-warning"></i>
+                                                                            }
+                                                                            <small class="text-body-secondary"> @string.Format("{0:0.0}", (item.Rate / item.Votes))</small>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <i class="bi bi-star text-warning"></i>
+                                                                        <small class="text-body-secondary"> 0.0</small>
+                                                                    }
+                                                                </p>
+                                                                <div>
+                                                                    <a asp-action="Details" asp-route-id="@item.SeriesID">
+                                                                        <button class="btn btn-outline-secondary"> <i class="bi bi-camera-reels"></i> Details</button>
+                                                                    </a>
+                                                                    <a asp-action="Edit" asp-route-id="@item.SeriesID">
+                                                                        <button class="btn btn-outline-primary"> <i class="bi bi-pencil"></i> Edit</button>
+                                                                    </a>
+                                                                    <a href="javascript:;" class="btn btn-outline-danger js-delete" data-id="@item.SeriesID">
+                                                                        <i class="bi bi-trash"></i>
+                                                                        Delete
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Css{
+    <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+}
+
+
+@section Scripts {
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.js-delete').on('click', function () {
+                var btn = $(this);
+                bootbox.confirm({
+                    message: "Are you sure that you need to delete this Series?",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-outline-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-outline-secondary'
+                        }
+                    },
+                    closeButton: false,
+                    onEscape: true,
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: '/Series/delete/' + btn.data('id'),
+                                success: function () {
+                                    var SeriesContainer = btn.parents('.col-12');
+                                    SeriesContainer.addClass('animate__animated animate__zoomOut');
+
+                                    setTimeout(function () {
+                                        SeriesContainer.remove();
+                                    }, 500);
+
+                                    toastr.success('Seriess deleted');
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong!');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        let table = $("#seriesTable").DataTable();
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            table.columns.adjust().recalc();
+        });
+    </script>
+}

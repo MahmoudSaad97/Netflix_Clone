@@ -1,0 +1,192 @@
+﻿@model IEnumerable<MovieApp.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/AdminPanel/_AdminPanelLayout.cshtml";
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary py-2 px-3 my-2">
+        <i class="bi bi-plus"></i>Add New User
+    </a>
+</p>
+<div class="tab-pane">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center nowrap" id="usersTable">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Role
+            </th>
+            <th>
+                First Name
+            </th>
+            <th>
+                Last Name
+            </th>
+            <th>
+                Country
+            </th>
+            <th>
+                Profile Count
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDate)
+            </th>
+@*            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>*@
+@*            <th>
+                @Html.DisplayNameFor(model => model.NormalizedUserName)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+@*            <th>
+                @Html.DisplayNameFor(model => model.NormalizedEmail)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.EmailConfirmed)
+            </th>
+@*            <th>
+                @Html.DisplayNameFor(model => model.PasswordHash)
+            </th>*@
+@*            <th>
+                @Html.DisplayNameFor(model => model.SecurityStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConcurrencyStamp)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LockoutEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LockoutEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccessFailedCount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+        }
+        @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td class="@ViewBag.colors[i]">
+                @{
+                    if(i < Model.Count())
+                        @ViewBag.currRoles[i];
+                    i++;
+                    
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.lname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.country)
+            </td>
+            <td>
+                @item.ProfileUsers.Count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BirthDate)
+            </td>
+@*            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>*@
+@*            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedUserName)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+@*            <td>
+                @Html.DisplayFor(modelItem => item.NormalizedEmail)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailConfirmed)
+            </td>
+@*            <td>
+                @Html.DisplayFor(modelItem => item.PasswordHash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecurityStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessFailedCount)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-filter-square"></i> Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+        </table>
+    </div>
+</div>
+
+@section Css{
+    <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        let table = $("#usersTable").DataTable({
+            "columnDefs": [
+                { "className": "dt-center", "targets": "_all" },
+                {
+                    targets: 1,
+                    width: 1
+                }
+            ],
+            scrollX: true
+        });
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
+            table.columns.adjust().recalc();
+        });
+    </script>
+}

@@ -1,0 +1,65 @@
+﻿@model Series
+
+@{
+    ViewData["Title"] = Model.SeriesName;
+    Layout = "../AdminPanel/_AdminPanelLayout";
+}
+
+
+<div class="row text-light movie-details justify-content-between">
+    <div class="col-md-4">
+        <img src="/images/series/@Model.Poster" alt="@Model.SeriesName" class="img-thumbnail h-100" />
+    </div>
+    <div class="col-md-7">
+        <div class="d-flex justify-content-between">
+            <h3>@Model.SeriesName</h3>
+            <span class="fs-5">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span class="text-light">  @string.Format("{0:0.0}", Model.Rate)</span>
+            </span>
+        </div>
+        <span class="fs-5">
+            <i class="bi bi-calendar2-range"></i>
+            <span class="fw-semibold">Realease Date: @Model.ReleaseDate?.Year</span>
+        </span>
+        <div class="my-3 p-2">
+            <p class="fs-5 text-justify">@Model.Description</p>
+        </div>
+        <h4>
+            <i class="bi bi-film"></i>
+            Genries
+        </h4>
+        <div class="genrie-container">
+            @foreach (var item in Model.Genries)
+            {
+                <p>@item.GenrieName</p>
+            }
+        </div>
+        <h4>Cast</h4>
+        <div class="genrie-container">
+            @foreach (var item in Model.Actors)
+            {
+                <p>@item.ActorName</p>
+            }
+            <p><span class="fw-bold">Director: </span>@Model.Director</p>
+        </div>
+        <div class="my-3">
+            Number of Seasons:
+            <span>@Model.Seasons.Count</span>
+        </div>
+        <div>
+            Views:
+            <i class="bi bi-eye-fill text-info"></i>
+            <span>@String.Format("{0:N0}", Model.Views)</span>
+        </div>
+
+
+    </div>
+
+</div>
+<div class="my-5 py-3">
+<a asp-action="Index">
+    <button class="btn btn-outline-warning py-2 px-3 my-2"><i class="bi bi-arrow-left-circle mx-1"></i> Back To Series</button>
+</a>
+
+</div>

@@ -1,0 +1,124 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    bool PageUrlContains(string url)
+    {
+        return ViewContext.HttpContext.Request.Path.Value.ToLower().Contains(url);
+    }
+    string MainUrl = "main";
+    string ManageUrl = "identity/account/";
+    string RenewUrl = "renew";
+}
+
+<style>
+    .custom-dropdown-item{
+        display: flex;
+        align-items: center;
+    }
+    .dropdown-item:hover{
+        background-color: black;
+    }
+    .profileIcons{
+        background-repeat: no-repeat;
+        background-size: cover;
+        width: 23px;
+        height: 23px;
+        display: inline-block;
+    }
+    .custom-bg-check{
+        -webkit-text-stroke: 1px;
+        color:green;
+    }
+</style>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        @if (PageUrlContains(MainUrl) || PageUrlContains(ManageUrl) || PageUrlContains(RenewUrl))
+        {
+            int currProfileId = 0;
+            if (PageUrlContains(MainUrl))
+                currProfileId = int.Parse(Context.Request.RouteValues["id"].ToString());
+            else if (PageUrlContains(ManageUrl))
+            {
+                
+            }
+
+            <script>
+                sessionStorage.setItem("ProfileId", @currProfileId);
+                window.addEventListener('load', function(){
+                    var profimg = sessionStorage.getItem("ProfileImg");
+                    document.getElementById('currProf').setAttribute("style", "background-image: url(/Images/Profiles/user" + profimg + ".png);");
+                        
+                });
+            </script>
+            <div class="dropdown mx-2">
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if (PageUrlContains(MainUrl))
+                    {
+                        <span class="text-info me-2 d-none d-lg-inline">@ViewBag.loggedUserFullName</span>
+                    }
+                    else if (PageUrlContains(ManageUrl) || PageUrlContains(RenewUrl))
+                    {
+                        <span class="text-info me-2">@ViewBag.loggedUserFullName</span>
+                    }
+                    <span id="currProf" class="profileIcons"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="dropdownMenuButton">
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in ViewBag.Profiles)
+                    {
+                        string profile = "user" + i + ".png";
+                        string disable = "";
+                        if (currProfileId == item.ProfileID) { 
+                            disable = "disabled"; 
+                            <script>
+                                sessionStorage.setItem("ProfileImg", @i);
+                            </script>
+                        }
+                        <a class="dropdown-item custom-dropdown-item text-light @disable" asp-controller="Main" asp-action="Index" asp-route-id="@item.ProfileID">
+                            <span class="profileIcons" style="background-image: url('/Images/Profiles/@profile')">
+                            </span>&nbsp; @item.ProfileName &nbsp;
+                            @if (currProfileId == item.ProfileID)
+                            {
+                                <i class="bi bi-check custom-bg-check"></i>
+                            }
+                        </a>
+                        i++;
+                }
+                <a class="dropdown-item text-light" asp-controller="Profile" asp-action="Index"><i class="bi bi-pencil-fill" style="color: dimgrey;"></i>&nbsp;&nbsp; Manage Profiles</a>
+                    
+                <a id="manage" class="dropdown-item text-light" asp-area="Identity" asp-page="/Account/Manage/Account" title="Manage">
+                    <i class="bi bi-person-fill" style="color: dimgrey;"></i>&nbsp;&nbsp; Account
+                </a>
+                <hr style="color: white; width:90%; margin: 0px auto;">
+                <!-- Show Admin Panel -->
+                @if (ViewBag.checkAdmin)
+                {
+                    <a class="dropdown-item text-danger" asp-controller="AdminPanel" asp-action="Index">
+                        <i class="fa fa-solid fa-crown" style="color: dimgrey;"></i>&nbsp;&nbsp; Admin Panel
+                    </a>
+                    <hr style="color: white; width:90%; margin: 0px auto;">
+                }
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                        <button type="submit" class="dropdown-item text-light"><i class="bi bi-box-arrow-right" style="color: grey;"></i>&nbsp;&nbsp; Logout</button>
+                </form>
+            </div>
+        </div>
+        }
+        @*<a id="manage" class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>*@
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-light" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-light" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+}

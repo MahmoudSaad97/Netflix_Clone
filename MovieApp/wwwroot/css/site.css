@@ -1,0 +1,69 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+body::-webkit-scrollbar{
+    width:5px;
+    color:#e62424;
+} 
+
+.season-poster {
+    height: 100px;
+    background-size: cover;
+    background-position: center center;
+    position:relative;
+    overflow:hidden;
+}
+
+.play-icon {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to top, #000, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size: 2rem;
+    color: white;
+    z-index: 1;
+    left:-100%;
+    bottom:-100%;
+    left:0;
+    transition: 0.5s;
+}
+
+.season-poster:hover .play-icon,
+.eposide-container:hover .play-icon{
+    height:100%;
+    bottom:0;
+    cursor:pointer;
+}
+
+.eposide-container {
+    height: 200px;
+    width: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position:relative;
+    overflow:hidden;
+}
+
+.eposide-container .play-icon{
+    font-size:2.2rem;
+}

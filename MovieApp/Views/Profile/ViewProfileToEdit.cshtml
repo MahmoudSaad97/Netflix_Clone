@@ -1,0 +1,33 @@
+﻿@model List<Profile>
+@{
+    Layout = "_ProfileLayout";
+    ViewData["Title"] = "Profiles";
+}
+
+<div class="whoIsWatching">
+    <div class="logo-section">
+        <a asp-action="Index"><img src="/Images/logo.png" alt="logo"></a>
+    </div>
+
+    <div class="main-div">
+        <h1>Which to edit?</h1>
+        <div class="memberDiv">
+            @{
+                int i = 1;
+            }
+            @foreach (var item in Model)
+            {
+                string profile = "profile" + i;
+                <a asp-action="Edit" asp-route-id="@item.ProfileID" asp-route-imgid="@i" class="addIcon @profile"><span>@item.ProfileName</span></a>
+                i++;
+            }
+        </div>
+        <a class="manageProfile" asp-action="Index">Back to Profiles</a>
+    </div>
+</div>
+
+@section Css{
+    <style>
+
+    </style>
+}

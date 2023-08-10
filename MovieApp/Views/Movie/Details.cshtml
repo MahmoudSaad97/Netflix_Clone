@@ -1,0 +1,55 @@
+﻿@model MovieApp.Models.Movie
+
+@{
+    ViewData["Title"] = Model.MovieName;
+    Layout = "../AdminPanel/_AdminPanelLayout";
+}
+
+
+<div class="row movie-details justify-content-between">
+    <div class="col-md-4">
+        <img src="/Images/movies/@Model.Poster" alt="@Model.MovieName" class="img-thumbnail h-100" />
+    </div>
+    <div class="col-md-7">
+        <div class="d-flex justify-content-between">
+            <h3>@Model.MovieName</h3>
+            <span class="fs-5">
+                <i class="bi bi-star-fill text-warning"></i>
+                <span>@String.Format("{0:0.0}",  (Model.votes != 0) ? (Model.Rate / Model.votes) : 0)</span>
+            </span>
+        </div>
+        <span class="fs-5">
+            <i class="bi bi-calendar2-range"></i>
+            <span class="fw-semibold">Realease Date: @Model.ReleaseDate.Value.Year</span>
+        </span>
+        <div class="my-3 p-2">
+            <p class="fs-5 text-justify">@Model.Description</p>
+        </div>
+        <h4>
+            <i class="bi bi-film"></i>
+            Genries
+        </h4>
+        <div class="genrie-container">
+            @foreach (var item in Model.Genries)
+            {
+                <p>@item.GenrieName</p>
+            }
+        </div>
+        <h4>Cast</h4>
+        <div class="genrie-container">
+            @foreach (var item in Model.Actors)
+            {
+                <p>@item.ActorName</p>
+            }
+            <p><span class="fw-bold">Director: </span>@Model.Director</p>
+        </div>
+        <div>
+            Views:
+            <i class="bi bi-eye-fill text-info"></i>
+            <span>@String.Format("{0:N0}", Model.Views)</span>
+        </div>
+
+
+    </div>
+
+</div>

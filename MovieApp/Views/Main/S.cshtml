@@ -1,0 +1,129 @@
+﻿@model DisplayMoviesViewModel;
+@{
+    ViewData["Title"] = ViewBag.SearchName;
+}
+
+@if (Model.TopMovies.Count > 0 || Model.TopSeries.Count > 0)
+{
+    <div class="container-fluid">
+        <h4 class="result-title">@ViewBag.SearchName Results</h4>
+        <div class="searched my-3" id="movieListContainer">
+            @foreach (var item in Model.TopMovies)
+            {
+                <div class="item">
+                    <a asp-action="PlayMovie" asp-route-id="@ViewBag.profileID" asp-route-mid="@item.MovieID">
+                        <div class="poster" style="background-image: url( /images/movies/@item.Poster)" loading="lazy">
+                        </div>
+                    </a>
+                    <div class="info">
+                            <h4>@item.MovieName</h4>
+                        <div class="text-end">
+                            <a onclick="ManageList(@ViewBag.profileID,@item.MovieID,'@Url.Action("AddToList","Main")',this)">
+                                <button class="btn btn-outline-light">
+                                    <i class="@(!Model.wishListMovies.Any(m=>m.MovieID == item.MovieID) ? "bi bi-patch-plus":"bi bi-trash") mx-1"></i>
+                                    <span>@(!Model.wishListMovies.Any(m => m.MovieID == item.MovieID) ? "Add To List" : "Remove From List")</span>
+                                </button>
+                            </a>
+                        </div>
+                        <p class="data">
+                            <span><i class="bi bi-star-fill text-warning mx-1"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                            <span><i class="bi bi-eye-fill text-info mx-1"></i>@String.Format("{0:N0}", item.Views)</span>
+                        </p>
+                    </div>
+                </div>
+            }
+            @foreach (var item in Model.TopSeries)
+            {
+                <div class="item">
+                    <a asp-action="DisplaySeries" asp-route-id="@ViewBag.profileID" asp-route-sid="@item.SeriesID">
+                        <div class="poster" style="background-image: url( /images/series/@item.Poster)" loading="lazy">
+                        </div>
+                    </a>
+                    <div class="info">
+                            <h4>@item.SeriesName</h4>
+                        <div class="text-end">
+                            <a onclick="ManageListSeries(@ViewBag.profileID,@item.SeriesID,'@Url.Action("AddSeriesToList","Main")',this)">
+                                <button class="btn btn-outline-light">
+                                    <i class="@(!Model.wishListSeries.Any(s=>s.SeriesID == item.SeriesID) ? "bi bi-patch-plus":"bi bi-trash") mx-1"></i>
+                                    <span>@(!Model.wishListSeries.Any(s => s.SeriesID == item.SeriesID) ? "Add To List" : "Remove From List")</span>
+                                </button>
+                            </a>
+                        </div>
+                        <p class="data">
+                            <span><i class="bi bi-star-fill text-warning mx-1"></i>@String.Format("{0:0.0}",  (item.Votes != 0) ? (item.Rate / item.Votes) : 0)</span>
+                            <span><i class="bi bi-eye-fill text-info mx-1"></i>@String.Format("{0:N0}", item.Views)</span>
+                        </p>
+                    </div>
+                </div>
+            }
+            </div>
+            <div class="searched my-1">
+
+            </div>
+    </div>
+}
+else
+{
+    <div class="container d-flex h-100 justify-content-center my-5 text-light">
+        <h4>No Movies Or Series Found</h4>
+    </div>
+}
+@section Scripts{
+    <script>
+        let type;
+        var profileID = @ViewBag.profileID;
+        var playMovieUrl = '@Url.Action("PlayMovie", "Main")';
+        var playSeriesUrl = '@Url.Action("DisplaySeries", "Main")';
+    </script>
+<script src="~/js/searchbyname.js"></script>
+<script>
+        $("#loader").hide();
+        var skip = 20;
+        var take = 30;
+        function debounce(func, delay) {
+            let timer;
+            return function () {
+                clearTimeout(timer);
+                timer = setTimeout(func, delay);
+            };
+        }
+
+        $(window).scroll(debounce(function () {
+            var tolerance = 10;
+
+            var windowHeight = $(window).height();
+            var documentHeight = $(document).height();
+            var scrollTop = $(window).scrollTop();
+            if (scrollTop + windowHeight >= documentHeight - tolerance) {
+                loadMoreMovies();
+            }
+        }, 300))
+
+        function loadMoreMovies() {
+            var searchUrl = `/Main/LoadMoreSearch/${profileID}?skip=${skip}&take=${take}&t=@ViewBag.type&sName=@ViewBag.SearchName`;
+
+            fetch(searchUrl)
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(function (responseText) {
+                    if (responseText.trim() !== '') {
+                        var newMovies = $(responseText).hide();
+                        $("#movieListContainer").append(newMovies);
+                        newMovies.slideDown("slow");
+                        skip += take;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                })
+                .finally(function () {
+                    $("#loader").hide();
+                });
+        }
+</script>
+}
+

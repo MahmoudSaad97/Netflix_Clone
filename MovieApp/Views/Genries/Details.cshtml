@@ -1,0 +1,29 @@
+﻿@model MovieApp.Models.Genrie
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/AdminPanel/_AdminPanelLayout.cshtml";
+}
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Genrie Id
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GenrieID)
+        </dd>
+    </dl>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Genrie Name
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GenrieName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-success py-2 px-3" asp-action="Edit" asp-route-id="@Model?.GenrieID">Edit</a> |
+    <a class="btn btn-info" asp-action="Index">Back</a>
+</div>

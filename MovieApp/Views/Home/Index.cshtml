@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    Layout = null;
+}
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/landing.css">
+    <title>Index - MovieApp</title>
+</head>
+<body>
+    @if (!SignInManager.IsSignedIn(User))
+    {
+        <div class="container">
+            <div class="header">
+                <img src="/Images/logo.png" alt="">
+                <ul>
+                    <li>
+                        <a class="login-btn" asp-area="Identity" asp-page="/Account/Register">
+                            <button class="login-btn">Register</button>
+                        </a>
+                    </li>
+                    <li >
+                        <a class="login-btn" asp-area="Identity" asp-page="/Account/Login">
+                            <button class="login-btn">Log In</button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-container">
+                <h1>Unlimited Movies TV Shows and more</h1>
+                <h4>Watch anywhere, cancel anytime. </h4>
+            </div>
+        </div>
+    }
+</body>
+</html>

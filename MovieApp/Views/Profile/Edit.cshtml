@@ -1,0 +1,50 @@
+﻿@model Profile
+@{
+    Layout = "_ProfileLayout";
+    ViewData["Title"] = "Profiles";
+}
+
+<div class="whoIsWatching">
+    <div class="logo-section">
+        <a asp-action="Index"><img src="/Images/logo.png" alt="logo"></a>
+    </div>
+
+    <div class="main-div">
+        <h1>Editing Profile: @ViewBag.imgid</h1>
+        <form asp-action="Edit">
+            <div class="memberDiv">
+                <input class="form-control" asp-for="ProfileID" hidden />
+                @{string profile = "profile" + ViewBag.imgid;}
+                <a class="addIcon @profile"><input class="input" asp-for="ProfileName" type="text" /></a>
+            </div>
+            <span asp-validation-for="ProfileName" class="d-block text-danger fs-4" style="margin-top:60px;"></span>
+            <input type="submit" class="manageProfile" style="margin-top:5px;" value="Update" />
+            <a asp-action="ConfirmDelete" asp-route-id ="@Model.ProfileID" asp-route-imgid="@ViewBag.imgid">
+                <i class="bi bi-trash-fill text-danger" style="font-size: 30px;"></i>
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <Partial name="_ValidationScriptsPartial" />
+}
+
+@section Css{
+    <style>
+        .addIcon:hover {
+            cursor: default;
+            border: 0px
+        }
+
+        .input{
+            width: inherit;
+            position: absolute;
+            bottom: -3.5rem;
+            left: 0;
+            text-transform: capitalize;
+            font-size: 2rem;
+            margin-bottom: -10px;
+        }
+    </style>
+}

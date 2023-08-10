@@ -1,0 +1,26 @@
+﻿@model DisplayMoviesViewModel;
+
+            @foreach (var item in Model.AllMovies)
+            {
+                        <div class="item"  loading="lazy">
+                                <a asp-action="PlayMovie" asp-route-id="@ViewBag.profileID" asp-route-mid="@item.MovieID">
+                                    <div class="poster" style="background-image: url( /images/movies/@item.Poster)">
+                                    </div>
+                                </a>
+                                <div class="info">
+                                    <h4>@item.MovieName</h4>
+                                    <div class="text-end">
+                                    <a onclick="ManageList(@ViewBag.profileID,@item.MovieID,'@Url.Action("AddToList","Main")',this)">
+                                        <button class="btn btn-outline-light">
+                                            <i class="@(!Model.wishListMovies.Any(m=>m.MovieID == item.MovieID) ? "bi bi-patch-plus":"bi bi-trash") mx-1"></i>
+                                            <span>@(!Model.wishListMovies.Any(m => m.MovieID == item.MovieID) ? "Add To List" : "Remove From List")</span>
+                                        </button>
+                                    </a>
+                                    </div>
+                                    <p class="data">
+                                        <span><i class="bi bi-star-fill text-warning mx-1"></i>@String.Format("{0:0.0}",  (item.votes != 0) ? (item.Rate / item.votes) : 0)</span>
+                                        <span><i class="bi bi-eye-fill text-info mx-1"></i>@String.Format("{0:N0}", item.Views)</span>
+                                    </p>
+                                </div>
+                        </div>
+            }
