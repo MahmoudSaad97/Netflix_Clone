@@ -101,7 +101,7 @@
                                                                     <a asp-action="Edit" asp-route-id="@item.SeriesID">
                                                                         <button class="btn btn-outline-primary"> <i class="bi bi-pencil"></i> Edit</button>
                                                                     </a>
-                                                                    <a href="javascript:;" class="btn btn-outline-danger js-delete" data-id="@item.SeriesID">
+                                                                    <a class="btn btn-outline-danger js-delete" data-id="@item.SeriesID" onclick="Delete(event)">
                                                                         <i class="bi bi-trash"></i>
                                                                         Delete
                                                                     </a>
@@ -133,46 +133,44 @@
     <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('.js-delete').on('click', function () {
-                var btn = $(this);
-                bootbox.confirm({
-                    message: "Are you sure that you need to delete this Series?",
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-outline-danger'
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-outline-secondary'
-                        }
+        function Delete(e) {
+            var btn = e.target;
+            bootbox.confirm({
+                message: "Are you sure that you need to delete this series?",
+                buttons: {
+                    confirm: {
+                        label: 'Yes',
+                        className: 'btn-outline-danger'
                     },
-                    closeButton: false,
-                    onEscape: true,
-                    callback: function (result) {
-                        if (result) {
-                            $.ajax({
-                                url: '/Series/delete/' + btn.data('id'),
-                                success: function () {
-                                    var SeriesContainer = btn.parents('.col-12');
-                                    SeriesContainer.addClass('animate__animated animate__zoomOut');
-
-                                    setTimeout(function () {
-                                        SeriesContainer.remove();
-                                    }, 500);
-
-                                    toastr.success('Seriess deleted');
-                                },
-                                error: function () {
-                                    toastr.error('Something went wrong!');
-                                }
-                            });
-                        }
+                    cancel: {
+                        label: 'No',
+                        className: 'btn-outline-secondary'
                     }
-                });
+                },
+                closeButton: false,
+                onEscape: true,
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: '/series/delete/' + btn.dataset.id,
+                            success: function () {
+                                var seriesContainer = btn.closest('.col-12');
+                                seriesContainer.classList.add('animate__animated', 'animate__zoomOut');
+
+                                setTimeout(function () {
+                                    seriesContainer.remove();
+                                }, 500);
+
+                                toastr.success('Series deleted');
+                            },
+                            error: function () {
+                                toastr.error('Something went wrong!');
+                            }
+                        });
+                    }
+                }
             });
-        });
+        }
 
         let table = $("#seriesTable").DataTable();
         $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
